@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --gold: #e5a82e;
+  --gold-light: #f3d99b;
+  --ink: #111110;
+  --paper: #fafaf9;
+  --muted: #6f6d66;
+  --border: #e8e4db;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--gold); color: var(--ink); }
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #f4f4f3; }
+::-webkit-scrollbar-thumb { background: #d1c9b8; border-radius: 999px; }
+
+/* Range input styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: #e8e4db;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #111110;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: #e5a82e;
+}
