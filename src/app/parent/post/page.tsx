@@ -28,7 +28,7 @@ export default function PostRequestPage() {
   })
   const set = (k: keyof typeof form, v: string) => setForm(f => ({ ...f, [k]: v }))
 
-  const subjects = lang === 'he' ? SUBJECTS_HE : SUBJECTS_EN
+  const subjects = SUBJECTS_EN
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
