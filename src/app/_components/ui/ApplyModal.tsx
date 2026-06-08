@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { X, Send, CheckCircle } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useLang } from '@/lib/lang-context'
+import { enToHe } from '@/lib/subjects'
 import type { TutoringRequest } from '@/types'
 import type { Session } from '@/lib/session'
 import type { TranslationKey } from '@/lib/translations'
@@ -64,7 +65,7 @@ export default function ApplyModal({ request, session, onClose, onSuccess }: Pro
         <div className="flex items-start justify-between px-6 py-5 border-b border-[#e8e4db]">
           <div>
             <h2 className="font-semibold text-[#111110] text-[15px]">{T(t, 'modal.apply.title')}</h2>
-            <p className="text-xs text-[#9c9a93] mt-0.5">{request.subject} · {T(t, 'card.grade')} {request.grade}</p>
+            <p className="text-xs text-[#9c9a93] mt-0.5">{enToHe[request.subject] ?? request.subject} · {T(t, 'card.grade')} {request.grade}</p>
           </div>
           <button onClick={onClose} className="p-1.5 hover:bg-[#f4f4f3] rounded-lg transition-colors"><X size={16} className="text-[#9c9a93]" /></button>
         </div>

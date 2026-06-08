@@ -91,6 +91,13 @@ function LoginForm() {
   }
 
   // STEP 3: submit details
+  const subjectToEn: Record<string, string> = {
+    'מתמטיקה': 'Mathematics', 'פיזיקה': 'Physics', 'כימיה': 'Chemistry',
+    'ביולוגיה': 'Biology', 'אנגלית': 'English', 'היסטוריה': 'History',
+    'ספרות': 'Literature', 'מדעי מחשב': 'Computer Science',
+    'כלכלה': 'Economics', 'גיאוגרפיה': 'Geography', 'מוזיקה': 'Music', 'אמנות': 'Art',
+  }
+
   const handleSignup = async () => {
     setError('')
     if (!form.full_name.trim() || !form.phone.trim() || !form.location.trim()) {
@@ -113,7 +120,7 @@ function LoginForm() {
         password: form.password.trim(),
       }
       if (role === 'tutor') {
-        insertData.subjects = selectedSubjects
+        insertData.subjects = selectedSubjects.map(s => subjectToEn[s] ?? s)
         insertData.hourly_rate = Number(form.hourly_rate)
         insertData.bio = form.bio.trim() || '-'
         insertData.teaching_format = form.teaching_format

@@ -7,13 +7,14 @@ import Navbar from '../../_components/layout/Navbar'
 import { supabase } from '@/lib/supabase'
 import { getSession } from '@/lib/session'
 import { useLang } from '@/lib/lang-context'
+import { SUBJECTS_EN, enToHe, heToEn } from '@/lib/subjects'
 import type { TranslationKey } from '@/lib/translations'
 
 function T(t: (k: TranslationKey) => string, k: string) { return t(k as TranslationKey) }
 type Format = 'online' | 'in_person' | 'both'
 
-const SUBJECTS_EN = ['Mathematics','Physics','Chemistry','Biology','English','History','Literature','Computer Science','Economics','Geography','Music','Art']
-const SUBJECTS_HE = ['מתמטיקה','פיזיקה','כימיה','ביולוגיה','אנגלית','היסטוריה','ספרות','מדעי מחשב','כלכלה','גיאוגרפיה','מוזיקה','אמנות']
+
+
 
 export default function PostRequestPage() {
   const router = useRouter()
@@ -94,7 +95,7 @@ export default function PostRequestPage() {
                 <label className="block text-sm font-medium text-[#3d3d3a] mb-1.5">{T(t, 'post.subject')}</label>
                 <select value={form.subject} onChange={e => set('subject', e.target.value)} className={`${inputCls} appearance-none cursor-pointer`}>
                   <option value="">{lang === 'he' ? 'בחר מקצוע' : 'Select subject'}</option>
-                  {subjects.map(s => <option key={s} value={s}>{s}</option>)}
+                  {SUBJECTS_EN.map(s => <option key={s} value={s}>{enToHe[s] ?? s}</option>)}
                 </select>
               </div>
               <div>

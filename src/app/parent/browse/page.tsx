@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, SlidersHorizontal, MapPin, Star, DollarSign, Wifi, Loader2, X, Plus, BookOpen } from 'lucide-react'
+import { Search, SlidersHorizontal, MapPin, DollarSign, Wifi, Loader2, X, Plus, BookOpen, MessageCircle, CheckCircle } from 'lucide-react'
 import Navbar from '../../_components/layout/Navbar'
 import { supabase } from '@/lib/supabase'
 import { getSession } from '@/lib/session'
@@ -29,6 +29,24 @@ export default function ParentBrowsePage() {
   const [lessonType, setLessonType] = useState('all')
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([])
   const [showFilters, setShowFilters] = useState(false)
+  const [contactTutor, setContactTutor] = useState<Tutor | null>(null)
+  const [contactMsg, setContactMsg] = useState('')
+  const [contactSent, setContactSent] = useState(false)
+  const [contactLoading, setContactLoading] = useState(false)
+
+  const handleContact = async () => {
+    if (!contactMsg.trim() || !session || !contactTutor) return
+    setContactLoading(true)
+    await supabase.from('contact_messages').insert({
+      from_id: session.id,
+      from_name: session.name,
+      to_tutor_id: contactTutor.id,
+      message: contactMsg.trim(),
+    })
+    setContactLoading(false)
+    setContactSent(true)
+    setTimeout(() => { setContactTutor(null); setContactSent(false); setContactMsg('') }, 2200)
+  }
   const [sortBy, setSortBy] = useState<'rate_asc' | 'rate_desc' | 'newest'>('rate_asc')
 
   const subjects = lang === 'he' ? SUBJECTS_HE : SUBJECTS_EN
@@ -201,16 +219,56 @@ export default function ParentBrowsePage() {
                   </div>
 
                   {/* CTA */}
-                  <a href={`tel:${tutor.phone}`} onClick={e => { if (!session) { e.preventDefault(); router.push('/login?role=parent') } }}
-                    className="w-full py-2.5 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 bg-[#111110] text-white hover:bg-[#e5a82e] hover:text-[#111110] transition-all cursor-pointer">
-                    {T(t, 'card.contact')}
-                  </a>
+                  <button onClick={() => { if (!session) { router.push('/login?role=parent'); return } setContactTutor(tutor); setContactMsg(''); setContactSent(false) }}
+                    className="w-full py-2.5 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 bg-[#111110] text-white hover:bg-[#e5a82e] hover:text-[#111110] transition-all">
+                    <MessageCircle size={13} /> {T(t, 'card.contact')}
+                  </button>
                 </div>
               ))}
             </div>
           )}
         </div>
       </main>
+      {/* Contact Modal */}
+      {contactTutor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setContactTutor(null)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+            {contactSent ? (
+              <div className="flex flex-col items-center text-center py-6">
+                <div className="w-14 h-14 bg-green-50 rounded-full flex items-center justify-center mb-4">
+                  <CheckCircle size={28} className="text-green-500" />
+                </div>
+                <h3 className="font-semibold text-[#111110] text-lg mb-1">ההודעה נשלחה!</h3>
+                <p className="text-sm text-[#6f6d66]">{contactTutor.full_name} יקבל את ההודעה שלך.</p>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h2 className="font-semibold text-[#111110]">צור קשר עם {contactTutor.full_name}</h2>
+                    <p className="text-xs text-[#9c9a93] mt-0.5">{contactTutor.location} · ₪{contactTutor.hourly_rate}/שעה</p>
+                  </div>
+                  <button onClick={() => setContactTutor(null)} className="p-1.5 hover:bg-[#f4f4f3] rounded-lg">
+                    <X size={16} className="text-[#9c9a93]" />
+                  </button>
+                </div>
+                <textarea value={contactMsg} onChange={e => setContactMsg(e.target.value)}
+                  placeholder="כתוב הודעה קצרה למורה..."
+                  rows={4}
+                  className="w-full px-4 py-3 bg-[#fafaf9] border border-[#e0dbd0] rounded-xl text-sm resize-none focus:outline-none focus:border-[#e5a82e] focus:ring-2 focus:ring-[#e5a82e]/20 mb-4" />
+                <div className="flex items-center gap-2 px-3 py-2 bg-[#faefd9] border border-[#f3d99b] rounded-xl text-xs text-[#a06e12] mb-4">
+                  📧 המורה יקבל עדכון שיש לו הודעה חדשה
+                </div>
+                <button onClick={handleContact} disabled={contactLoading || !contactMsg.trim()}
+                  className="w-full py-3 bg-[#111110] text-white font-medium rounded-xl hover:bg-[#e5a82e] hover:text-[#111110] transition-all text-sm disabled:opacity-60 flex items-center justify-center gap-2">
+                  {contactLoading ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <><MessageCircle size={14} /> שלח הודעה</>}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </>
   )
 }

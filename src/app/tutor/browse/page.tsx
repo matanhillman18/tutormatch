@@ -6,6 +6,7 @@ import { Search, SlidersHorizontal, MapPin, GraduationCap, DollarSign, Wifi, Che
 import Navbar from '../../_components/layout/Navbar'
 import ApplyModal from '../../_components/ui/ApplyModal'
 import { supabase } from '@/lib/supabase'
+import { enToHe } from '@/lib/subjects'
 import { getSession } from '@/lib/session'
 import { useLang } from '@/lib/lang-context'
 import type { TutoringRequest, Tutor } from '@/types'
@@ -224,10 +225,10 @@ export default function TutorBrowsePage() {
                   <div key={req.id} onClick={() => !hasApplied && handleApply(req)}
                     className={`bg-white border border-[#e8e4db] rounded-2xl p-5 transition-all duration-200 ${hasApplied ? 'opacity-60' : 'hover:shadow-md hover:-translate-y-0.5 cursor-pointer'}`}>
                     <div className="flex items-start justify-between mb-3">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${colorClass}`}>{req.subject}</span>
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${colorClass}`}>{enToHe[req.subject] ?? req.subject}</span>
                       {hasApplied && <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">{T(t, 'card.applied')}</span>}
                     </div>
-                    <h3 className="font-semibold text-[#111110] text-[15px] mb-1.5">{req.subject} — {T(t, 'card.grade')} {req.grade}</h3>
+                    <h3 className="font-semibold text-[#111110] text-[15px] mb-1.5">{enToHe[req.subject] ?? req.subject} — {T(t, 'card.grade')} {req.grade}</h3>
                     <p className="text-sm text-[#6f6d66] leading-relaxed mb-4 line-clamp-2">{req.description}</p>
                     <div className="flex flex-wrap items-center gap-3 text-xs text-[#9c9a93] mb-4">
                       <span className="flex items-center gap-1"><DollarSign size={12} />₪{req.budget}{T(t, 'card.budget')}</span>
