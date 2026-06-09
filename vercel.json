@@ -1,1 +1,1 @@
-{"buildCommand":"cd tutormatch && npm install && npm run build","outputDirectory":"tutormatch/dist","installCommand":"cd tutormatch && npm install"}
+﻿{"rootDirectory":"tutormatch"}
